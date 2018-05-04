@@ -1,0 +1,63 @@
+<!DOCTYPE HTML>
+
+<html>
+<head>
+    <title>TodoList Application</title>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.0/angular.min.js"></script>
+    <script src="app.js"></script>
+    <script src="/app/services/TodoListService.js"></script>
+    <script src="/app/controller/TodoListController.js"></script>
+    <link rel="stylesheet" type="text/css" href="/css/todoList.css">
+</head>
+<body>
+<div ng-app="todoListApp" ng-controller="todoController">
+
+    <h2 align="center"> Todo List Demo</h2>
+    <br>
+
+    <h3> Todo List </h3>
+    <br>
+
+    <ul>
+        <li ng-repeat="todo in todos | filter:{done:false}" ng-mouseover="row = $index" ng-mouseleave="row = -1">
+            <input type="checkbox" ng-model="todo.done">
+            <span>Notes {{todo.noteId}} </span>
+            <span ng-show="row == $index" class="animate-show">
+                <a><img class="one" src="/images/close-icon.png" ng-click="delete(todo)"></a>
+            </span>
+        </li>
+    </ul>
+
+    <br>
+
+    <form ng-submit="addTodo()">
+        <textarea ng-model="todoText" rows="5" cols="50" maxlength="250">
+            Enter you note detail here...</textarea>
+        </textarea>
+        <br>
+        <br>
+      <div>
+          <input type="submit" value="Add Note">
+          <input type="button" ng-click="save()" value="Save notes"/>
+
+      </div>
+    </form>
+
+    <h3> Done List </h3>
+
+    <div>
+        <ul>
+            <li ng-repeat="todo in todos | filter:{done:true}">
+                <input type="checkbox" ng-model="todo.done">
+                <span>Notes {{todo.noteId}} </span>
+            </li>
+        </ul>
+    </div>
+
+
+</div>
+</body>
+</html>
