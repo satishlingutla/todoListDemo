@@ -1,7 +1,41 @@
+body {
+    background-color: aliceblue;
+}
+h2, h3 {
+    text-decoration: underline;
+}
+
+.button {
+    background-color: #3A3B33;
+    border: none;
+    color: white;
+    padding: 8px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 12px;
+    margin: 4px 2px;
+    cursor: pointer;
+}
+
 li {
     width: 200px;
     list-style-type: none;
     padding: 6px 10px;
+}
+
+li.todoShow {
+    width: 200px;
+    list-style-type: none;
+    padding: 6px 10px;
+    background: #ffffe6;
+}
+
+li.todoDone {
+    width: 200px;
+    list-style-type: none;
+    padding: 6px 10px;
+    background: #D9DCC4;
 }
 
 li:hover {
@@ -26,4 +60,15 @@ li:hover {
 img.one {
     width: 10%;
     height: 10%;
+    float: right;
+}
+.message{
+    display: iinline-block !important;
+    width: 600px;
+    height: 20px;
+    margin: 5px;
+    border: 1px ;
+    font-family: "Times New Roman", Times, serif;
+    font-size: 20px;
+    color:#ff3300;
 }

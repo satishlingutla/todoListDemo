@@ -2,12 +2,12 @@
 
 var app = angular.module('todoListApp.todoController', []);
 app.controller('todoController'
-    , function ($scope, todoListService) {
+    , function ($scope, todoListService, $q, $timeout) {
         $scope.rowSelected = -1;
         $scope.todos = [
         ];
-
         $scope.todoCount = 1;
+
 
         $scope.addTodo = function () {
             $scope.todos.push({noteId: $scope.todoCount, noteDetail: $scope.todoText, done: false});
@@ -20,23 +20,60 @@ app.controller('todoController'
             $scope.todos.splice(index, 1);
         }
 
+        $scope.isSaved = true;
+        $scope.messageTxt = '';
+
+        $scope.alertMsg = function (message) {
+            $scope.isSaved = false;
+            $scope.messageTxt = message;
+            $timeout(function () {
+                $scope.isSaved = true;
+            }, 2000);
+        }
+
         $scope.save = function () {
 
+            var MSG_SAVED = 'Your details are saved successfully. Please verify in database...';
+            var MSG_ERROR = 'Error occured while saving....';
+            var MSG_NO_DETAIL_TO_SAVE = 'There is nothing to update...';
+
             if ($scope.todos.length > 0) {
+
                 console.log(' Saved todo notes detatails successfully..... ');
-                todoListService.createtoDoDetail($scope.todos);
+
+
+                var deferred = $q.defer();
+
+                todoListService.createtoDoDetail($scope.todos)
+                    .then(function (response) {
+
+                        console.log('Saved successfully ');
+                        $scope.todos = [];
+                        $scope.todoCount = 1;
+                        $scope.alertMsg(MSG_SAVED);
+                        deferred.resolve(response.data);
+                    }, function error(response) {
+                        console.log('Error while saving notes details');
+                        $scope.alertMsg(MSG_ERROR);
+                        deferred.reject(errResponse);
+                    });
+                return deferred.promise;
+            } else {
+                $scope.alertMsg(MSG_NO_DETAIL_TO_SAVE);
             }
+
         }
     });
 
 // Factory defined for the $http
 
-app.factory('todoListService', ['$http', '$location', '$q', function ($http, $location, $q) {
+app.factory('todoListService', ['$http', '$location', 'urls', function ($http, $location, urls) {
     return {
         createtoDoDetail: function (todos) {
 
             // post URL
             var url = $location.absUrl() + "saveDetails";
+//            var url = urls.BASE_URL + "saveDetails";
 
             // prepare headers for posting
             var config = {
@@ -49,18 +86,8 @@ app.factory('todoListService', ['$http', '$location', '$q', function ($http, $lo
             // prepare data for post messages
             var dataArr = todos;
 
-            // do posting
-            var deferred = $q.defer();
-            $http.post(url, dataArr, config)
-                .then(function (response) {
-                    console.log('Saved successfully ');
-                    deferred.resolve(response.data);
+            return $http.post(url, dataArr, config);
 
-                }, function error(response) {
-                    console.log('Erro while saving notes details');
-                    deferred.reject(errResponse);
-                });
-            return deferred.promise;
 
         }
     }
